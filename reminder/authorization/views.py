@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-from django.core.context_processors import csrf
 from django.contrib import auth
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.urlresolvers import reverse
@@ -10,9 +9,8 @@ from .forms import UserCreateForm
 def login(request):
     if request.user.is_authenticated():
         return redirect(reverse('note:all'))
+
     args = {}
-    args.update(csrf(request))
-    args['form'] = AuthenticationForm()
     if request.POST:
         user_post_form = AuthenticationForm(request, data=request.POST)
         if user_post_form.is_valid():
@@ -21,6 +19,8 @@ def login(request):
             return redirect(reverse('note:all'))
         else:
             args['login_error'] = 'User is not find'
+    else:
+        args['form'] = AuthenticationForm()
 
     return render(request, 'authorization/login.html', args)
 
@@ -33,9 +33,8 @@ def logout(request):
 def registration(request):
     if request.user.is_authenticated():
         return redirect(reverse('note:all'))
+
     args = {}
-    args.update(csrf(request))
-    args['form'] = UserCreateForm()
     if request.POST:
         user_post_form = UserCreateForm(request.POST)
         if user_post_form.is_valid():
@@ -48,5 +47,7 @@ def registration(request):
             return redirect(reverse('note:all'))
         else:
             args['form'] = user_post_form
+    else:
+        args['form'] = UserCreateForm()
 
     return render(request, 'authorization/registr.html', args)

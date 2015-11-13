@@ -18,12 +18,11 @@ def all(request, cat_id=None, tag_id=None):
     args['form_note'] = AddNoteForm(user.id)
     args['form_tag'] = AddTagForm
     if cat_id:
-        notes = Notes.objects.filter(author=user.id, category=cat_id)
+        args['notes'] = Notes.objects.filter(author=user.id, category=cat_id)
     elif tag_id:
-        notes = Notes.objects.filter(author=user.id, tag=tag_id)
+        args['notes'] = Notes.objects.filter(author=user.id, tag=tag_id)
     else:
-        notes = args['all_notes']
-    args['notes'] = notes
+        args['notes'] = args['all_notes']
 
     return render(request, 'note/all.html', args)
 
@@ -37,9 +36,7 @@ def addNote(request, note_id=None):
     args['all_tags'] = Tags.objects.filter(author=user.id)
     if note_id:
         try:
-            query = Notes.objects.get(id=note_id)
-            if query.author_id != user.id:
-                raise Notes.DoesNotExist
+            query = Notes.objects.get(pk=note_id, author=user.id)
         except Notes.DoesNotExist:
             return redirect(reverse('note:all'))
     else:
@@ -62,27 +59,25 @@ def addNote(request, note_id=None):
 @login_required(login_url='author:login')
 def addCat(request, cat_id=None):
 
-    user = get_user(request)
     args = {}
+    user = get_user(request)
     args['categories'] = Categories.objects.filter(author=user.id)
     if cat_id:
         try:
-            query = Categories.objects.get(id=cat_id)
-            if query.author_id != user.id:
-                raise Categories.DoesNotExist
+            query = Categories.objects.get(id=cat_id, author=user.id)
         except Categories.DoesNotExist:
             return redirect(reverse('note:addCat'))
         args['form_category'] = AddCategoryForm(user.id, is_disabled=True, instance=query)
     else:
         query = None
         args['form_category'] = AddCategoryForm(user.id)
+
     args['cat_id'] = cat_id
 
     if request.POST:
         post_form = AddCategoryForm(user.id, data=request.POST, instance=query)
         if post_form.is_valid():
             post_form.save()
-
             return redirect(reverse('note:addCat'))
 
     return render(request, 'note/addCat.html', args)
@@ -97,9 +92,7 @@ def addTag(request, tag_id=None):
 
     if tag_id:
         try:
-            query = Tags.objects.get(id=tag_id)
-            if query.author_id != user.id:
-                raise Tags.DoesNotExist
+            query = Tags.objects.get(id=tag_id, author=user.id)
         except Tags.DoesNotExist:
             return redirect(reverse('note:addTag'))
     else:
@@ -130,13 +123,15 @@ def delNote(request, note_id):
 def delCat(request, cat_id):
 
     if request.POST:
-
         for cat_id in request.POST.getlist('remove_cat'):
-            if Categories.objects.get(pk=cat_id):
-                Categories.objects.get(pk=cat_id).delete()
-        return redirect(reverse('note:addCat'))
+            try:
+                obj = Categories.objects.get(pk=cat_id)
+                obj.delete()
+            except Categories.DoesNotExist:
+                continue
 
-    if Categories.objects.get(pk=cat_id):
+        return redirect(reverse('note:addCat'))
+    else:
         Categories.objects.get(pk=cat_id).delete()
 
     return redirect(reverse('note:addCat'))
@@ -149,8 +144,8 @@ def delTag(request, tag_id):
         for tag_id in request.POST.getlist('remove_tag'):
             Tags.objects.get(pk=tag_id).delete()
         return redirect(reverse('note:addTag'))
-
-    Tags.objects.get(pk=tag_id).delete()
+    else:
+        Tags.objects.get(pk=tag_id).delete()
 
     return redirect(reverse('note:addTag'))
 

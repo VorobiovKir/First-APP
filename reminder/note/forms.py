@@ -50,7 +50,7 @@ class AddCategoryForm(forms.ModelForm):
         self.fields['parent'].queryset = Categories.objects.filter(author=user)
         self.fields['parent'].level_indicator = unichr(0x00A0) * 2
         if is_disabled:
-            self.fields['parent'].widget = forms.Select(attrs={'disabled':'disabled'})
+            self.fields['parent'].widget = forms.Select(attrs={'disabled': 'disabled'})
 
     class Meta:
         model = Categories
