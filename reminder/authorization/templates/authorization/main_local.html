@@ -1,0 +1,20 @@
+{% extends 'main.html' %}
+
+{% block author_menu %}
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a href="{% url 'author:login' %}">
+                    <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
+                    Login
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'author:regist' %}">
+                    <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>
+                    Registration
+                </a>
+            </li>
+        </ul>
+    </div>
+{% endblock %}

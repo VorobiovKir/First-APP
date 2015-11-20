@@ -1,0 +1,34 @@
+{% load staticfiles %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reminder</title>
+    {#  bootstrap css  #}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    {#  reset css  #}
+    <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+    {#  local css  #}
+    {% block local_css %}{% endblock %}
+</head>
+
+<body>
+    <div class="container">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/">Reminder</a>
+                </div>
+                {% block author_menu %}{% endblock %}
+        </nav>
+        <div class="page-header">
+            <h1>Reminder Me <small>we allways remind you about everything</small></h1>
+        </div>
+        {% block content %}{% endblock %}
+    </div>
+    {#  jquery  #}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    {#  bootstrap js  #}
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+</body>
+</html>

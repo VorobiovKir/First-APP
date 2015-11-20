@@ -1,0 +1,18 @@
+{% extends 'note/main_local.html' %}
+{% load bootstrap3 %}
+
+{% block categories %}
+
+<form action="{% url 'note:addTag' %}" method="POST" class="form login_form">
+    {% csrf_token %}
+
+    {% bootstrap_form form_tag %}
+    {% buttons %}
+        <button type="submit" class="btn btn-primary">
+            {% bootstrap_icon "star" %} Submit
+        </button>
+    {% endbuttons %}
+
+</form>
+
+{% endblock %}

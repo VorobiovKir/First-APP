@@ -1,0 +1,22 @@
+{% extends 'authorization/main_local.html' %}
+
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+{% block local_css %}
+    <link rel="stylesheet" href="{% static 'authorization/css/registr.css' %}">
+{% endblock %}
+
+{% block content %}
+    <form action="{% url 'author:regist' %}" method="POST" class="form form_registr">
+        {% csrf_token %}
+        <div class="container">
+            {% bootstrap_form form %}
+            {% buttons %}
+                <button type="submit" class="btn btn-primary">
+                    {% bootstrap_icon "star" %} Submit
+                </button>
+            {% endbuttons %}
+        </div>
+    </form>
+{% endblock %}
