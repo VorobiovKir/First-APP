@@ -144,12 +144,6 @@
       <foreign-key name="#FAKE_note_notes_2" columns="author_id" ref-table="auth_user" ref-schema="" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="1"/>
       <exported-key name="#FAKE_note_notes_category_2" table="note_notes_category" schema="" catalog="" columns="notes_id"/>
       <exported-key name="#FAKE_note_notes_tag_2" table="note_notes_tag" schema="" catalog="" columns="notes_id"/>
-      <exported-key name="#FAKE_note_notes_category_2" table="note_notes_category" schema="" catalog="" columns="notes_id"/>
-      <exported-key name="#FAKE_note_notes_tag_2" table="note_notes_tag" schema="" catalog="" columns="notes_id"/>
-      <exported-key name="#FAKE_note_notes_category_2" table="note_notes_category" schema="" catalog="" columns="notes_id"/>
-      <exported-key name="#FAKE_note_notes_tag_2" table="note_notes_tag" schema="" catalog="" columns="notes_id"/>
-      <exported-key name="#FAKE_note_notes_category_2" table="note_notes_category" schema="" catalog="" columns="notes_id"/>
-      <exported-key name="#FAKE_note_notes_tag_2" table="note_notes_tag" schema="" catalog="" columns="notes_id"/>
       <index name="note_notes_399a0583" unique="true" columns="color_id"/>
       <index name="note_notes_4f331e2f" unique="true" columns="author_id"/>
     </table>

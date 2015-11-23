@@ -4,30 +4,72 @@
 
 {% block categories %}
 
-    <h1>HELLO, {{ username }} </h1>
-    <ul>
-        {% for category in categories %}
-            <li>{{ category }}</li>
-        {% endfor %}
-    </ul>
+    <h1>This is a main page</h1>
+    <hr>
 
+    <div class="row">
+        <div class="left col-md-3">
+            <ul style="list-style: none; font-size: 14px;">
+                {% recursetree categories %}
+                    <li>
+                        <span class="glyphicon glyphicon-list-alt"></span> <a href="{{ node.id }}">{{ node.name }}</a>
+                        <span class="badge">{{ node.notes_set.get }}</span>
+                        {% if not name.is_leaf_node %}
+                            <ul style="list-style: none; margin-left: -20px;" class="children">
+                                <a href="">{{ children }}</a>
+                            </ul>
+                        {% endif %}
+                    </li>
+                {% endrecursetree %}
+            </ul>
+        </div>
+        <div class="right col-md-9">
+            {% for note in notes %}
 
-    <ul>
-        {% recursetree categories %}
-            <li>
-                <a href="">{{ node.name }}</a>
-                {% if not name.is_leaf_node %}
-                    <ul class="children">
-                        <a href="">{{ children }}</a>
-                    </ul>
-                {% endif %}
-            </li>
-        {% endrecursetree %}
-    </ul>
+                <p>
+                    <a  role="button" data-toggle="collapse" href="#{{ note.id }}" aria-expanded="false" aria-controls="collapseExample">
+                        {% if note.name %}
+                            {{ note.name }}
+                        {% else %}
+                            no title
+                        {% endif %}
+                    </a>
+                </p>
+
+                <div class="collapse" id="{{ note.id }}">
+                    <div class="well">
+                        <a href=""><span class="glyphicon glyphicon-edit"></span></a>
+                        <a href="{% url 'note:delNote' note.id %}" onclick="return confirm('Do you want to delete?');"><span class="glyphicon glyphicon-remove"></span></a>
+                        <br>
+                        <span style="background-color:{{ note.color }}; width: 10px; height: 10px; display: inline-block;"></span>
+                        {{ note.context }}
+                        {% if note.tag.all %}
+                            <br>
+                            {% for tag in note.tag.all %}
+                                <a href=""><span class="glyphicon glyphicon glyphicon-tags"></span> {{ tag.name }}</a>
+                            {% endfor %}
+                        {% endif %}
+                        {% if note.category.all %}
+                            <br>
+                            {% for category in note.category.all %}
+                                <a href="">@ {{ category.name }}</a>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+
+            {% endfor %}
+
+            {% for field in form %}
+                <p>{{ field.label }}</p>
+                <p>{{ field }}</p>
+            {% endfor %}
+        </div>
+    </div>
 
     <hr>
     <ul>
-        {% for tag in alltags %}
+        {% for tag in all_tags %}
             <li>{{ tag }}</li>
         {% endfor %}
     </ul>

@@ -12,15 +12,19 @@ def all(request):
 
     user = get_user(request)
     args = {}
-    args['username'] = user.username.title()
     args['categories'] = Categories.objects.filter(author=user.id)
-    args['alltags'] = Tags.objects.filter(author=user.id)
+    args['all_tags'] = Tags.objects.filter(author=user.id)
+    args['all_notes'] = Notes.objects.filter(author=user.id)
     args['form_note'] = AddNoteForm(user.id)
     args['form_tag'] = AddTagForm
     notes = Notes.objects.filter(author=user.id)
     # if not notes:
     #     return render(request, 'note/addNote.html', args)
     args['notes'] = notes
+
+    # for category in args['categories']:
+    #     print dir(category.notes_set)
+    #     break
 
     return render(request, 'note/all.html', args)
 
@@ -30,17 +34,30 @@ def addNote(request):
 
     user = get_user(request)
     args = {}
-    args['username'] = user.username.title()
     args['categories'] = Categories.objects.filter(author=user.id)
-    args['alltags'] = Tags.objects.filter(author=user.id)
+    args['all_tags'] = Tags.objects.filter(author=user.id)
     args['form_note'] = AddNoteForm(user.id)
     # args['form_tag'] = AddTagForm
     # args['form_category'] = AddCategoryForm
 
     if request.POST:
         post_form = AddNoteForm(user.id, data=request.POST)
+
         if post_form.is_valid():
-            post_form.save()
+            temp_save = post_form.save(commit=False)
+            temp_save.author_id = user.id
+            temp_save.save()
+            post_form.save_m2m()
+            # test = post_form.save(commit=False)
+            # test.author_id = user.id
+            # test.save()
+            # post_form.save()
+            # post_form.save_m2m()
+            # post_form.save_m2m()
+            # post_form.save()
+            # post = Notes()
+            # post.category.add(Categories.object.get(id=request.POST['category']))
+            # post_form.save_m2m()
 
     return render(request, 'note/addNote.html', args)
 
@@ -49,8 +66,8 @@ def addNote(request):
 def addCat(request):
     args = {}
     user = get_user(request)
-    args['username'] = user.username.title()
     args['form_category'] = AddCategoryForm(user.id)
+    args['categories'] = Categories.objects.filter(author=user.id)
 
     if request.POST:
         post_form = AddCategoryForm(user.id, data=request.POST)
@@ -64,7 +81,20 @@ def addCat(request):
 def addTag(request):
     args = {}
     user = get_user(request)
-    args['username'] = user.username.title()
-    args['form_tag'] = AddTagForm
+    args['form_tag'] = AddTagForm(user.id)
+
+    if request.POST:
+        post_form = AddTagForm(user.id, data=request.POST)
+
+        if post_form.is_valid():
+            post_form.save()
 
     return render(request, 'note/addTag.html', args)
+
+
+@login_required(login_url='author:login')
+def delNote(request, note_id):
+
+    Notes.objects.get(pk=note_id).delete()
+
+    return redirect(reverse('note:all'))

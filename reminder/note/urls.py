@@ -6,6 +6,7 @@ urlpatterns = [
     url(r'^add/$', 'note.views.addNote', name='add'),
     url(r'^addCat/$', 'note.views.addCat', name='addCat'),
     url(r'^addTag/$', 'note.views.addTag', name='addTag'),
+    url(r'^delNote/(?P<note_id>[0-9]+)/$', 'note.views.delNote', name='delNote'),
     # url(r'^all/$', 'note.views.all', name='all'),
 ]
 
