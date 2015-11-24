@@ -13,7 +13,7 @@
                 {% recursetree categories %}
                     <li>
                         <span class="glyphicon glyphicon-list-alt"></span> <a href="{{ node.id }}">{{ node.name }}</a>
-                        <span class="badge">{{ node.notes_set.get }}</span>
+                        <span style="font-size: 10px; background-color:tomato;" class="badge">{{ node.notes_set.all|length }}</span>
                         {% if not name.is_leaf_node %}
                             <ul style="list-style: none; margin-left: -20px;" class="children">
                                 <a href="">{{ children }}</a>
@@ -23,6 +23,7 @@
                 {% endrecursetree %}
             </ul>
         </div>
+
         <div class="right col-md-9">
             {% for note in notes %}
 
@@ -38,19 +39,19 @@
 
                 <div class="collapse" id="{{ note.id }}">
                     <div class="well">
-                        <a href=""><span class="glyphicon glyphicon-edit"></span></a>
+                        <a href="{% url 'note:editNote' note.id %}"><span class="glyphicon glyphicon-edit"></span></a>
                         <a href="{% url 'note:delNote' note.id %}" onclick="return confirm('Do you want to delete?');"><span class="glyphicon glyphicon-remove"></span></a>
                         <br>
                         <span style="background-color:{{ note.color }}; width: 10px; height: 10px; display: inline-block;"></span>
                         {{ note.context }}
                         {% if note.tag.all %}
-                            <br>
+                            <hr>
                             {% for tag in note.tag.all %}
                                 <a href=""><span class="glyphicon glyphicon glyphicon-tags"></span> {{ tag.name }}</a>
                             {% endfor %}
                         {% endif %}
-                        {% if note.category.all %}
-                            <br>
+                        {% if note.category.all %}<br>
+                            <hr>
                             {% for category in note.category.all %}
                                 <a href="">@ {{ category.name }}</a>
                             {% endfor %}

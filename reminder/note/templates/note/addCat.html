@@ -23,17 +23,40 @@
 
 
 
-<form action="{% url 'note:addCat' %}" method="POST" class="form login_form">
-    {% csrf_token %}
+    <form action="{% url 'note:addCat' %}" method="POST" class="form login_form">
+        {% csrf_token %}
 
-    {% bootstrap_form form_category %}
+        {% bootstrap_form form_category %}
 
-    {% buttons %}
-        <button type="submit" class="btn btn-primary">
-            {% bootstrap_icon "star" %} Submit
-        </button>
-    {% endbuttons %}
+        {% buttons %}
+            <button type="submit" class="btn btn-primary">
+                {% bootstrap_icon "star" %} Submit
+            </button>
+        {% endbuttons %}
 
-</form>
+    </form>
+    <hr>
+    <form action="{% url 'note:delCat' 0 %}" method="POST">
+        {% csrf_token %}
+        {% buttons %}
+            <button type="submit" class="btn btn-primary">
+                {% bootstrap_icon "star" %} Submit
+            </button>
+        {% endbuttons %}
+        <table class="table">
+            {% for category in categories %}
+                <tr>
+                    <td><input type="checkbox" name="remove_cat" value="{{ category.id }}"></td>
+                    <td>{{ category }}</td>
+                    <td>{{ category.get_descendant_count }}</td>
+                    <td>{{ category.parent }}</td>
+                    <td>{{ category.notes_set.all|length }}</td>
+                    <td><a href="{% url 'note:delCat' category.id %}" onclick="return confirm('Do you want to delete?');"><span class="glyphicon glyphicon-remove"></span></a></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </form>
+
+
 
 {% endblock %}

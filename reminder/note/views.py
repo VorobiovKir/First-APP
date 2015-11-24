@@ -22,42 +22,39 @@ def all(request):
     #     return render(request, 'note/addNote.html', args)
     args['notes'] = notes
 
-    # for category in args['categories']:
-    #     print dir(category.notes_set)
-    #     break
-
     return render(request, 'note/all.html', args)
 
 
 @login_required(login_url='author:login')
-def addNote(request):
+def addNote(request, note_id=None):
 
     user = get_user(request)
     args = {}
     args['categories'] = Categories.objects.filter(author=user.id)
     args['all_tags'] = Tags.objects.filter(author=user.id)
-    args['form_note'] = AddNoteForm(user.id)
-    # args['form_tag'] = AddTagForm
-    # args['form_category'] = AddCategoryForm
+    if note_id:
+        query = Notes.objects.get(id=note_id)
+    else:
+        query = None
+    args['note_id'] = note_id
+    args['form_note'] = AddNoteForm(user.id, instance=query)
+
+    # for field in args['form_note']:
+    #     print '----------------------------'
+    #     print dir(field)
+    #     # print field.__getattribute__.__name__
+    #     print '----------------------------'
+    #     break
 
     if request.POST:
-        post_form = AddNoteForm(user.id, data=request.POST)
+        post_form = AddNoteForm(user.id, data=request.POST, instance=query)
 
         if post_form.is_valid():
             temp_save = post_form.save(commit=False)
             temp_save.author_id = user.id
             temp_save.save()
             post_form.save_m2m()
-            # test = post_form.save(commit=False)
-            # test.author_id = user.id
-            # test.save()
-            # post_form.save()
-            # post_form.save_m2m()
-            # post_form.save_m2m()
-            # post_form.save()
-            # post = Notes()
-            # post.category.add(Categories.object.get(id=request.POST['category']))
-            # post_form.save_m2m()
+            return redirect(reverse('note:all'))
 
     return render(request, 'note/addNote.html', args)
 
@@ -98,3 +95,17 @@ def delNote(request, note_id):
     Notes.objects.get(pk=note_id).delete()
 
     return redirect(reverse('note:all'))
+
+
+@login_required(login_url='author:login')
+def delCat(request, cat_id):
+
+    if request.POST:
+
+        for cat_id in request.POST.getlist('remove_cat'):
+            Categories.objects.get(pk=cat_id).delete()
+        return redirect(reverse('note:addCat'))
+
+    Categories.objects.get(pk=cat_id).delete()
+
+    return redirect(reverse('note:addCat'))
