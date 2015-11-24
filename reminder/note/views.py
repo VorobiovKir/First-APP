@@ -62,10 +62,11 @@ def addCat(request, cat_id=None):
     args['categories'] = Categories.objects.filter(author=user.id)
     if cat_id:
         query = Categories.objects.get(id=cat_id)
+        args['form_category'] = AddCategoryForm(user.id, is_disabled=True, instance=query)
     else:
         query = None
+        args['form_category'] = AddCategoryForm(user.id)
     args['cat_id'] = cat_id
-    args['form_category'] = AddCategoryForm(user.id, instance=query)
 
     if request.POST:
         post_form = AddCategoryForm(user.id, data=request.POST, instance=query)

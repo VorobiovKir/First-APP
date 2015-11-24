@@ -44,11 +44,13 @@ class AddCategoryForm(forms.ModelForm):
 
     parent = TreeNodeChoiceField(Categories.objects.none(), required=False)
 
-    def __init__(self, user, *args, **kwargs):
+    def __init__(self, user, is_disabled=None, *args, **kwargs):
         self.user = user
         super(AddCategoryForm, self).__init__(*args, **kwargs)
         self.fields['parent'].queryset = Categories.objects.filter(author=user)
         self.fields['parent'].level_indicator = unichr(0x00A0) * 2
+        if is_disabled:
+            self.fields['parent'].widget = forms.Select(attrs={'disabled':'disabled'})
 
     class Meta:
         model = Categories
