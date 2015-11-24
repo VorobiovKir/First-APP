@@ -5,28 +5,38 @@
 {% block categories %}
 
 
-{#    <select name="category" id="id_category">#}
-{#    <option value="" selected="selected">---------</option>#}
-{#    {% for item in categories %}#}
-{#        {% ifequal item.parent_id None %}#}
-{#            <optgroup label="{{ item.name }}">#}
-{#                <option value="{{ item.id }}">{{ item.name }}</option>#}
-{#                {% for subitem in categories %}#}
-{#                    {% ifequal subitem.parent_id item.id %}#}
-{#                       <option value="{{ subitem.id }}">{{ subitem.name }}</option>#}
-{#                    {% endifequal %}#}
-{#                {% endfor %}#}
-{#            </optgroup>#}
-{#        {% endifequal %}#}
-{#    {% endfor %}#}
-{#    </select>#}
+    {#    <select name="category" id="id_category">#}
+    {#    <option value="" selected="selected">---------</option>#}
+    {#    {% for item in categories %}#}
+    {#        {% ifequal item.parent_id None %}#}
+    {#            <optgroup label="{{ item.name }}">#}
+    {#                <option value="{{ item.id }}">{{ item.name }}</option>#}
+    {#                {% for subitem in categories %}#}
+    {#                    {% ifequal subitem.parent_id item.id %}#}
+    {#                       <option value="{{ subitem.id }}">{{ subitem.name }}</option>#}
+    {#                    {% endifequal %}#}
+    {#                {% endfor %}#}
+    {#            </optgroup>#}
+    {#        {% endifequal %}#}
+    {#    {% endfor %}#}
+    {#    </select>#}
 
 
-
-    <form action="{% url 'note:addCat' %}" method="POST" class="form login_form">
+    <form action="
+        {% if cat_id %}
+            {% url 'note:editCat' cat_id %}
+        {% else %}
+            {% url 'note:addCat' %}
+        {% endif %}
+    " method="POST" class="form login_form">
         {% csrf_token %}
 
+        <h1>{{ name }}</h1>
         {% bootstrap_form form_category %}
+{#        {% for field in form_category %}#}
+{#            <p>{{ field }}</p>#}
+{#        {% endfor %}#}
+
 
         {% buttons %}
             <button type="submit" class="btn btn-primary">
@@ -36,26 +46,43 @@
 
     </form>
     <hr>
-    <form action="{% url 'note:delCat' 0 %}" method="POST">
-        {% csrf_token %}
-        {% buttons %}
-            <button type="submit" class="btn btn-primary">
-                {% bootstrap_icon "star" %} Submit
-            </button>
-        {% endbuttons %}
-        <table class="table">
-            {% for category in categories %}
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">Your Categories:</h3>
+        </div>
+        <form action="{% url 'note:delCat' 0 %}" method="POST">
+            {% csrf_token %}
+            {% buttons %}
+                <button type="submit" class="btn btn-primary pull-right">
+                    {% bootstrap_icon "remove" %} Delete
+                </button>
+            {% endbuttons %}
+            <table class="table table-hover">
+                <thead style="font-weight: bold;">
                 <tr>
-                    <td><input type="checkbox" name="remove_cat" value="{{ category.id }}"></td>
-                    <td>{{ category }}</td>
-                    <td>{{ category.get_descendant_count }}</td>
-                    <td>{{ category.parent }}</td>
-                    <td>{{ category.notes_set.all|length }}</td>
-                    <td><a href="{% url 'note:delCat' category.id %}" onclick="return confirm('Do you want to delete?');"><span class="glyphicon glyphicon-remove"></span></a></td>
+                    <td>#</td>
+                    <td>Name</td>
+                    <td>Subcategories</td>
+                    <td>Parent category</td>
+                    <td>Notes</td>
                 </tr>
-            {% endfor %}
-        </table>
-    </form>
+                </thead>
+                <tbody>
+                {% for category in categories %}
+                    <tr>
+                        <td><input type="checkbox" name="remove_cat" value="{{ category.id }}"></td>
+                        <td><a href="{% url 'note:editCat' category.id %}">{{ category }}</a></td>
+                        <td>{{ category.get_descendant_count }}</td>
+                        <td>{{ category.parent|default:"---" }}</td>
+                        <td>{{ category.notes_set.all|length }}</td>
+                        <td><a href="{% url 'note:delCat' category.id %}" onclick="return confirm('Do you want to delete?');"><span class="glyphicon glyphicon-remove"></span></a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </form>
+
+    </div>
 
 
 

@@ -39,13 +39,6 @@ def addNote(request, note_id=None):
     args['note_id'] = note_id
     args['form_note'] = AddNoteForm(user.id, instance=query)
 
-    # for field in args['form_note']:
-    #     print '----------------------------'
-    #     print dir(field)
-    #     # print field.__getattribute__.__name__
-    #     print '----------------------------'
-    #     break
-
     if request.POST:
         post_form = AddNoteForm(user.id, data=request.POST, instance=query)
 
@@ -60,31 +53,49 @@ def addNote(request, note_id=None):
 
 
 @login_required(login_url='author:login')
-def addCat(request):
-    args = {}
+def addCat(request, cat_id=None):
+
     user = get_user(request)
-    args['form_category'] = AddCategoryForm(user.id)
+    args = {}
     args['categories'] = Categories.objects.filter(author=user.id)
+    if cat_id:
+        query = Categories.objects.get(id=cat_id)
+    else:
+        query = None
+    args['cat_id'] = cat_id
+    args['form_category'] = AddCategoryForm(user.id, instance=query)
 
     if request.POST:
-        post_form = AddCategoryForm(user.id, data=request.POST)
+        post_form = AddCategoryForm(user.id, data=request.POST, instance=query)
         if post_form.is_valid():
             post_form.save()
+
+            return redirect(reverse('note:addCat'))
 
     return render(request, 'note/addCat.html', args)
 
 
 @login_required(login_url='author:login')
-def addTag(request):
+def addTag(request, tag_id=None):
+
     args = {}
     user = get_user(request)
-    args['form_tag'] = AddTagForm(user.id)
+    args['tags'] = Tags.objects.filter(author=user.id)
+
+    if tag_id:
+        query = Tags.objects.get(id=tag_id)
+    else:
+        query = None
+
+    args['tag_id'] = tag_id
+    args['form_tag'] = AddTagForm(user.id, instance=query)
 
     if request.POST:
-        post_form = AddTagForm(user.id, data=request.POST)
-
+        post_form = AddTagForm(user.id, data=request.POST, instance=query)
         if post_form.is_valid():
             post_form.save()
+
+        return redirect(reverse('note:addTag'))
 
     return render(request, 'note/addTag.html', args)
 
@@ -109,3 +120,16 @@ def delCat(request, cat_id):
     Categories.objects.get(pk=cat_id).delete()
 
     return redirect(reverse('note:addCat'))
+
+
+@login_required(login_url='author:login')
+def delTag(request, tag_id):
+
+    if request.POST:
+        for tag_id in request.POST.getlist('remove_tag'):
+            Tags.objects.get(pk=tag_id).delete()
+        return redirect(reverse('note:addTag'))
+
+    Tags.objects.get(pk=tag_id).delete()
+
+    return redirect(reverse('note:addTag'))

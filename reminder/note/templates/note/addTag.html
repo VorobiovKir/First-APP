@@ -3,16 +3,58 @@
 
 {% block categories %}
 
-<form action="{% url 'note:addTag' %}" method="POST" class="form login_form">
-    {% csrf_token %}
+    <form action="
+        {% if tag_id %}
+            {% url 'note:editTag' tag_id %}
+        {% else %}
+            {% url 'note:addTag' %}
+        {% endif %}
+    " method="POST" class="form login_form">
+        {% csrf_token %}
+        {% csrf_token %}
 
-    {% bootstrap_form form_tag %}
-    {% buttons %}
-        <button type="submit" class="btn btn-primary">
-            {% bootstrap_icon "star" %} Submit
-        </button>
-    {% endbuttons %}
+        {% bootstrap_form form_tag %}
+        {% buttons %}
+            <button type="submit" class="btn btn-primary">
+                {% bootstrap_icon "star" %} Submit
+            </button>
+        {% endbuttons %}
 
-</form>
+    </form>
+
+
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">Your Tags:</h3>
+        </div>
+        <form action="{% url 'note:delTag' 0 %}" method="POST">
+            {% csrf_token %}
+            {% buttons %}
+                <button type="submit" class="btn btn-primary pull-right">
+                    {% bootstrap_icon "remove" %} Delete
+                </button>
+            {% endbuttons %}
+            <table class="table table-hover">
+                <thead style="font-weight: bold;">
+                <tr>
+                    <td>#</td>
+                    <td>Name</td>
+                    <td>Notes</td>
+                </tr>
+                </thead>
+                <tbody>
+                {% for tag in tags %}
+                    <tr>
+                        <td><input type="checkbox" name="remove_tag" value="{{ tag.id }}"></td>
+                        <td><a href="{% url 'note:editTag' tag.id %}">{{ tag }}</a></td>
+                        <td>{{ tag.notes_set.all|length }}</td>
+                        <td><a href="{% url 'note:delTag' tag.id %}" onclick="return confirm('Do you want to delete?');"><span class="glyphicon glyphicon-remove"></span></a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </form>
+
+    </div>
 
 {% endblock %}
