@@ -12,7 +12,7 @@
             <ul style="list-style: none; font-size: 14px;">
                 {% recursetree categories %}
                     <li>
-                        <span class="glyphicon glyphicon-list-alt"></span> <a href="{{ node.id }}">{{ node.name }}</a>
+                        <span class="glyphicon glyphicon-list-alt"></span> <a href="{% url 'note:showCat' node.id %}">{{ node.name }}</a>
                         <span style="font-size: 10px; background-color:tomato;" class="badge">{{ node.notes_set.all|length }}</span>
                         {% if not name.is_leaf_node %}
                             <ul style="list-style: none; margin-left: -20px;" class="children">
@@ -24,7 +24,11 @@
             </ul>
         </div>
 
-        <div class="right col-md-9">
+        <div class="right col-md-8 col-md-offset-1">
+            <h2>My Notes: </h2>
+            {% if not notes %}
+                Notes not found
+            {% endif %}
             {% for note in notes %}
 
                 <p>
@@ -47,13 +51,13 @@
                         {% if note.tag.all %}
                             <hr>
                             {% for tag in note.tag.all %}
-                                <a href=""><span class="glyphicon glyphicon glyphicon-tags"></span> {{ tag.name }}</a>
+                                <a href="{% url 'note:showTag' tag.id %}"><span class="glyphicon glyphicon glyphicon-tags"></span> {{ tag.name }}</a>
                             {% endfor %}
                         {% endif %}
                         {% if note.category.all %}<br>
                             <hr>
                             {% for category in note.category.all %}
-                                <a href="">@ {{ category.name }}</a>
+                                <a href="{% url 'note:showCat' category.id %}">@ {{ category.name }}</a>
                             {% endfor %}
                         {% endif %}
                     </div>
@@ -69,63 +73,5 @@
     </div>
 
     <hr>
-    <ul>
-        {% for tag in all_tags %}
-            <li>{{ tag }}</li>
-        {% endfor %}
-    </ul>
-
-    <hr>
-
-
-{#    {% for note in notes %}#}
-{##}
-{#        <p>#}
-{#            <a  role="button" data-toggle="collapse" href="#{{ note.id }}" aria-expanded="false" aria-controls="collapseExample">#}
-{#                {% if note.name %}#}
-{#                    {{ note.name }}#}
-{#                {% else %}#}
-{#                    no title#}
-{#                {% endif %}#}
-{#            </a>#}
-{#        </p>#}
-{##}
-{#        <div class="collapse" id="{{ note.id }}">#}
-{#            <div class="well">#}
-{#                <span style="background-color:{{ note.color }}; width: 10px; height: 10px; display: inline-block;"></span>#}
-{#                {{ note.context }}#}
-{#                {% for tag in note.tag.all %}#}
-{#                    <br>#}
-{#                    <a href="">#{{ tag.name }}</a>#}
-{#                {% endfor %}#}
-{#                <br>#}
-{#                {% for category in note.category.all %}#}
-{#                    <a href="">@ {{ category.name }}</a>#}
-{#                {% endfor %}#}
-{#            </div>#}
-{#        </div>#}
-{##}
-{#    {% endfor %}#}
-
-{#    {% for field in form %}#}
-{#        <p>{{ field.label }}</p>#}
-{#        <p>{{ field }}</p>#}
-{#    {% endfor %}#}
-
-
-    <form action="{% url 'note:all' %}" method="POST" class="form login_form">
-        {% csrf_token %}
-
-        {% bootstrap_form form_note %}
-{#        {% bootstrap_form form_tag %}#}
-        {% buttons %}
-            <button type="submit" class="btn btn-primary">
-                {% bootstrap_icon "star" %} Submit
-            </button>
-        {% endbuttons %}
-
-    </form>
-
-
 
 {% endblock %}

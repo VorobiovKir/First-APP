@@ -12,6 +12,8 @@ urlpatterns = [
     url(r'^delCat/(?P<cat_id>[0-9]+)/$', 'note.views.delCat', name='delCat'),
     url(r'^delTag/(?P<tag_id>[0-9]+)/$', 'note.views.delTag', name='delTag'),
     url(r'^editTag/(?P<tag_id>[0-9]+)/$', 'note.views.addTag', name='editTag'),
+    url(r'^cat(?P<cat_id>[0-9]+)/$', 'note.views.all', name='showCat'),
+    url(r'^tag(?P<tag_id>[0-9]+)/$', 'note.views.all', name='showTag'),
     # url(r'^all/$', 'note.views.all', name='all'),
 ]
 

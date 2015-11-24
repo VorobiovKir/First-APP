@@ -8,7 +8,7 @@ from .forms import AddNoteForm, AddTagForm, AddCategoryForm
 
 
 @login_required(login_url='author:login')
-def all(request):
+def all(request, cat_id=None, tag_id=None):
 
     user = get_user(request)
     args = {}
@@ -17,7 +17,12 @@ def all(request):
     args['all_notes'] = Notes.objects.filter(author=user.id)
     args['form_note'] = AddNoteForm(user.id)
     args['form_tag'] = AddTagForm
-    notes = Notes.objects.filter(author=user.id)
+    if cat_id:
+        notes = Notes.objects.filter(author=user.id, category=cat_id)
+    elif tag_id:
+        notes = Notes.objects.filter(author=user.id, tag=tag_id)
+    else:
+        notes = args['all_notes']
     # if not notes:
     #     return render(request, 'note/addNote.html', args)
     args['notes'] = notes
@@ -133,3 +138,11 @@ def delTag(request, tag_id):
     Tags.objects.get(pk=tag_id).delete()
 
     return redirect(reverse('note:addTag'))
+
+
+def showCat(request, cat_id=None):
+    user = get_user(request)
+    args = {}
+    args['notes'] = Notes.objects.filter(author=user.id, category=cat_id)
+
+    return render(request, 'note/category.html', args)
