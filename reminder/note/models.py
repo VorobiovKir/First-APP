@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-import mptt
 from mptt.models import MPTTModel, TreeForeignKey
 
 
@@ -44,5 +43,3 @@ class Notes(models.Model):
 
     def __unicode__(self):
         return self.name
-
-# mptt.register(Categories,)

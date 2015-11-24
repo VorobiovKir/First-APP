@@ -13,36 +13,13 @@ class AddNoteForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         self.user = user
         super(AddNoteForm, self).__init__(*args, **kwargs)
-        # self.fields['tag'].queryset = Tags.objects.filter(author=user)
-        # self.fields['category'].queryset = Categories.objects.filter(author=user)
+        self.fields['tag'].queryset = Tags.objects.filter(author=user)
+        self.fields['category'].queryset = Categories.objects.filter(author=user)
         self.fields['category'].level_indicator = unichr(0x00A0) * 2
-        # self.fields['category'].required = False
-        # self.fields['tag'].required = False
-        # self.fields['color'].required = False
 
     class Meta:
         model = Notes
         fields = ['name', 'context', 'color', 'tag', 'category']
-
-    # def save(self, commit=True):
-    #     test = Notes.objects.get(pk=self.user)
-    #     note = super(AddNoteForm, self).save(commit=False)
-    # #     test = note.save(commit=False)
-    #     note.author_id = self.user
-    # #     test.save()
-    #
-    #
-    #     # note.category.add(Categories.object.get(id=note.category)
-    #     # note.category.add(Categories.object.get(id=request.POST['category']))
-    # #
-    #     if commit:
-    #         note.save()
-    #         test.category.add(1)
-    #         # self.save_m2m(commit=True)
-    #         # note.category.add(Categories.objects.get(id=note.category))
-    #         # note.save_m2m()
-    #         # self.save_m2m()
-    #         # return note
 
 
 class AddTagForm(forms.ModelForm):

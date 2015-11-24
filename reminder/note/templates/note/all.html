@@ -9,6 +9,10 @@
 
     <div class="row">
         <div class="left col-md-3">
+            {% if not categories %}
+                <h3 style="color: gray; margin-top: 50px;">Categories not found</h3>
+                <p>Click here to <a href="{% url 'note:addCat' %}">add new category</a></p>
+            {% endif %}
             <ul style="list-style: none; font-size: 14px;">
                 {% recursetree categories %}
                     <li>
@@ -27,7 +31,8 @@
         <div class="right col-md-8 col-md-offset-1">
             <h2>My Notes: </h2>
             {% if not notes %}
-                Notes not found
+                <h3 style="color: gray; margin-top: 50px;">Notes not found</h3>
+                <p>Click here to <a href="{% url 'note:add' %}">add new note</a></p>
             {% endif %}
             {% for note in notes %}
 

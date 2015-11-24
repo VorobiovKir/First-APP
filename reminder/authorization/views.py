@@ -4,8 +4,6 @@ from django.contrib import auth
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.urlresolvers import reverse
 
-
-
 from .forms import UserCreateForm
 
 
@@ -29,7 +27,6 @@ def login(request):
 
 def logout(request):
     auth.logout(request)
-    # return reverse('login')
     return redirect(reverse('author:login'))
 
 
@@ -44,8 +41,8 @@ def registration(request):
         if user_post_form.is_valid():
             user_post_form.save()
             new_user = auth.authenticate(
-                username = user_post_form.cleaned_data['username'],
-                password = user_post_form.cleaned_data['password2']
+                username=user_post_form.cleaned_data['username'],
+                password=user_post_form.cleaned_data['password2']
             )
             auth.login(request, new_user)
             return redirect(reverse('note:all'))

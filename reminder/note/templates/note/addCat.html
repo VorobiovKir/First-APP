@@ -4,24 +4,6 @@
 
 {% block categories %}
 
-
-    {#    <select name="category" id="id_category">#}
-    {#    <option value="" selected="selected">---------</option>#}
-    {#    {% for item in categories %}#}
-    {#        {% ifequal item.parent_id None %}#}
-    {#            <optgroup label="{{ item.name }}">#}
-    {#                <option value="{{ item.id }}">{{ item.name }}</option>#}
-    {#                {% for subitem in categories %}#}
-    {#                    {% ifequal subitem.parent_id item.id %}#}
-    {#                       <option value="{{ subitem.id }}">{{ subitem.name }}</option>#}
-    {#                    {% endifequal %}#}
-    {#                {% endfor %}#}
-    {#            </optgroup>#}
-    {#        {% endifequal %}#}
-    {#    {% endfor %}#}
-    {#    </select>#}
-
-
     <form action="
         {% if cat_id %}
             {% url 'note:editCat' cat_id %}
@@ -33,10 +15,6 @@
 
         <h1>{{ name }}</h1>
         {% bootstrap_form form_category %}
-{#        {% for field in form_category %}#}
-{#            <p>{{ field }}</p>#}
-{#        {% endfor %}#}
-
 
         {% buttons %}
             <button type="submit" class="btn btn-primary">
@@ -83,7 +61,5 @@
         </form>
 
     </div>
-
-
 
 {% endblock %}

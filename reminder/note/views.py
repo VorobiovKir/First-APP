@@ -23,8 +23,6 @@ def all(request, cat_id=None, tag_id=None):
         notes = Notes.objects.filter(author=user.id, tag=tag_id)
     else:
         notes = args['all_notes']
-    # if not notes:
-    #     return render(request, 'note/addNote.html', args)
     args['notes'] = notes
 
     return render(request, 'note/all.html', args)
@@ -46,7 +44,6 @@ def addNote(request, note_id=None):
 
     if request.POST:
         post_form = AddNoteForm(user.id, data=request.POST, instance=query)
-
         if post_form.is_valid():
             temp_save = post_form.save(commit=False)
             temp_save.author_id = user.id
@@ -119,10 +116,12 @@ def delCat(request, cat_id):
     if request.POST:
 
         for cat_id in request.POST.getlist('remove_cat'):
-            Categories.objects.get(pk=cat_id).delete()
+            if Categories.objects.get(pk=cat_id):
+                Categories.objects.get(pk=cat_id).delete()
         return redirect(reverse('note:addCat'))
 
-    Categories.objects.get(pk=cat_id).delete()
+    if Categories.objects.get(pk=cat_id):
+        Categories.objects.get(pk=cat_id).delete()
 
     return redirect(reverse('note:addCat'))
 
