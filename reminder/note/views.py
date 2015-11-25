@@ -36,7 +36,12 @@ def addNote(request, note_id=None):
     args['categories'] = Categories.objects.filter(author=user.id)
     args['all_tags'] = Tags.objects.filter(author=user.id)
     if note_id:
-        query = Notes.objects.get(id=note_id)
+        try:
+            query = Notes.objects.get(id=note_id)
+            if query.author_id != user.id:
+                raise Notes.DoesNotExist
+        except Notes.DoesNotExist:
+            return redirect(reverse('note:all'))
     else:
         query = None
     args['note_id'] = note_id
