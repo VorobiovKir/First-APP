@@ -66,7 +66,12 @@ def addCat(request, cat_id=None):
     args = {}
     args['categories'] = Categories.objects.filter(author=user.id)
     if cat_id:
-        query = Categories.objects.get(id=cat_id)
+        try:
+            query = Categories.objects.get(id=cat_id)
+            if query.author_id != user.id:
+                raise Categories.DoesNotExist
+        except Categories.DoesNotExist:
+            return redirect(reverse('note:addCat'))
         args['form_category'] = AddCategoryForm(user.id, is_disabled=True, instance=query)
     else:
         query = None
@@ -91,7 +96,12 @@ def addTag(request, tag_id=None):
     args['tags'] = Tags.objects.filter(author=user.id)
 
     if tag_id:
-        query = Tags.objects.get(id=tag_id)
+        try:
+            query = Tags.objects.get(id=tag_id)
+            if query.author_id != user.id:
+                raise Tags.DoesNotExist
+        except Tags.DoesNotExist:
+            return redirect(reverse('note:addTag'))
     else:
         query = None
 
