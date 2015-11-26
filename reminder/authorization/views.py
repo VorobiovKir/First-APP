@@ -19,6 +19,7 @@ def login(request):
             return redirect(reverse('note:all'))
         else:
             args['login_error'] = 'User is not find'
+            args['form'] = AuthenticationForm()
     else:
         args['form'] = AuthenticationForm()
 
